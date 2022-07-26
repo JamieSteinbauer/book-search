@@ -19,6 +19,21 @@ const resolvers = {
             const token = signToken(user);
 
             return { token, user };
+        },
+        login: async (parent, { email, password }) => {
+            const user = await User.findOne({ email });
+
+            if(!user) {
+                throw new AuthenticationError('Oops incorrect credentials');
+            }
+
+            const correctPassword = await user.isCorrectPassword(password);
+            if (!correctPassword) {
+                throw new AuthenticationError('Oops incorrect credentials');
+            }
+
+            const token = signToken(user);
+            return { token, user };
         }
     }
 };
