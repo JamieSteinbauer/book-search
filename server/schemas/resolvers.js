@@ -1,5 +1,6 @@
 const { UserInputError, AuthenticationError } = require("apollo-server-express");
 const { User, Book } = require('../models');
+const { signToken } = require('../utils/auth');
 
 const resolvers = {
     Query: {
@@ -48,7 +49,7 @@ const resolvers = {
             throw new AuthenticationError('Uh oh! Not logged in!');
         },
         removeBook: async (_parent, { bookId }, context) => {
-            console.log('resolver: ', bookId);
+
             if (context.user) {
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: context.user._id },
