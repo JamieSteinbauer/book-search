@@ -1,5 +1,5 @@
 const { UserInputError, AuthenticationError } = require("apollo-server-express");
-const { User } = require('../models');
+const { User, Book } = require('../models');
 
 const resolvers = {
     Query: {
@@ -11,6 +11,14 @@ const resolvers = {
                 return userData;
             }
             throw new AuthenticationError('Uh oh! Not logged in');
+        }
+    },
+    Mutation: {
+        addUser: async (_parent, args) => {
+            const user = await User.create(args);
+            const token = signToken(user);
+
+            return { token, user };
         }
     }
 };
