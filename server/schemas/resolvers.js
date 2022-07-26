@@ -45,7 +45,19 @@ const resolvers = {
 
                 return updatedUser;
             }
-            throw new AuthenticationError('Uh oh! Not logged in!')
+            throw new AuthenticationError('Uh oh! Not logged in!');
+        },
+        removeBook: async (_parent, { bookId }, context) => {
+            console.log('resolver: ', bookId);
+            if (context.user) {
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: context.user._id },
+                    { $pull: { savedBooks: { bookId } } },
+                    { new: true }
+                );
+                return updatedUser;
+            }
+            throw new AuthenticationError('Uh oh! Not logged in!');
         }
     }
 };
